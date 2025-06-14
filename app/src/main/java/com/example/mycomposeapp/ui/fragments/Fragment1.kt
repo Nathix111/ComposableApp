@@ -15,7 +15,7 @@ import com.example.mycomposeapp.ui.components.GForceGraph
 import kotlin.math.sqrt
 
 @Composable
-fun Fragment1(acceleration: androidx.compose.runtime.State<Triple<Float, Float, Float>>) {
+fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
     val historyX = remember { mutableStateListOf<Float>() }
     val historyY = remember { mutableStateListOf<Float>() }
     val historyZ = remember { mutableStateListOf<Float>() }

@@ -1,7 +1,5 @@
 package com.example.mycomposeapp
 
-import android.Manifest
-
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener

@@ -23,12 +23,6 @@ import androidx.compose.foundation.background
 import kotlin.math.sqrt
 import androidx.compose.ui.Alignment
 
-import android.media.AudioFormat
-import android.media.AudioRecord
-import android.media.MediaRecorder
-import androidx.annotation.RequiresPermission
-import kotlin.math.log10
-
 class MainActivity : ComponentActivity(), SensorEventListener {
 
 
@@ -159,79 +153,11 @@ fun GForceGraph(history: List<Float>, color: Color, label: String) {
     }
 }
 
-class AudioUtils {
 
-    companion object {
-        private const val SAMPLE_RATE = 44100 // Taux d'échantillonnage
-        private const val BUFFER_SIZE = 1024 // Taille du tampon d'enregistrement
-
-        private var audioRecord: AudioRecord? = null
-
-        // Méthode pour obtenir les décibels
-        @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-        fun getDecibels(): Double {
-            // On récupère la taille du tampon minimale nécessaire pour l'enregistrement
-            val bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
-
-            // Initialisation de l'AudioRecord
-            audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize
-            )
-
-            val buffer = ShortArray(BUFFER_SIZE)
-            audioRecord?.startRecording()
-
-            // Lecture des données audio
-            val numberOfReadBytes = audioRecord?.read(buffer, 0, buffer.size) ?: 0
-            audioRecord?.stop()
-
-            var sum = 0.0
-            // Calcul de la somme des carrés des valeurs audio
-            for (i in 0 until numberOfReadBytes) {
-                sum += (buffer[i].toDouble() * buffer[i].toDouble())
-            }
-
-            val amplitude = sum / numberOfReadBytes
-            return 10 * log10(amplitude) // Calcul du niveau en décibels
-        }
-    }
-}
 
 @Composable
 fun Fragment2() {
-    var currentDb by remember { mutableDoubleStateOf(0.0) }
-    var maxDb by remember { mutableDoubleStateOf(0.0) }
 
-    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Décibels actuels: ${currentDb.toInt()} dB", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Valeur maximale: ${maxDb.toInt()} dB",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Button(onClick = { maxDb = 0.0 }) {
-                Text("Réinitialiser Max")
-            }
-        }
-    }
-
-
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            val newDb = (10..100).random().toDouble() //AudioUtils.getDecibels()
-            currentDb = newDb
-            if (newDb > maxDb) {
-                maxDb = newDb
-            }
-            kotlinx.coroutines.delay(500)
-        }
-    }
 }
 
 

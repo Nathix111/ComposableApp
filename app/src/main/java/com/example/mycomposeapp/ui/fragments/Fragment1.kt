@@ -105,7 +105,7 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
+                        .height(500.dp)
                         .background(MaterialTheme.colorScheme.background)
                         .padding(4.dp)
                 ) {

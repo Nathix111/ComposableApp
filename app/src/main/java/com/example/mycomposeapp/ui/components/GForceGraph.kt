@@ -44,11 +44,11 @@ private fun DrawScope.drawGrid(textPaint: android.graphics.Paint) {
     val width = size.width
     val height = size.height
     val centerY = height / 2
-    val maxG = 3f
+    val maxG = 6f
     val gridColor = Color.LightGray.copy(alpha = 0.3f)
 
     // Horizontal lines with labels
-    for (g in -3..3) {
+    for (g in -5..5) {
         val gf = g.toFloat()
         val y = centerY - (gf * height) / (2 * maxG)
         drawLine(
@@ -68,7 +68,7 @@ private fun DrawScope.drawGrid(textPaint: android.graphics.Paint) {
     }
 
     // Vertical lines
-    val stepCount = 5
+    val stepCount = 10
     for (i in 0..stepCount) {
         val x = width * i / stepCount
         drawLine(
@@ -98,7 +98,7 @@ private fun DrawScope.drawLineGraph(
     val width = size.width
     val height = size.height
     val centerY = height / 2
-    val maxG = 3f
+    val maxG = 6f
     val pointCount = history.size
     val stepX = width / (pointCount - 1).coerceAtLeast(1)
 

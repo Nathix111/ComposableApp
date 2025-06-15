@@ -1,4 +1,3 @@
-// sensor/AccelerationSensorManager.kt
 package com.example.mycomposeapp.sensor
 
 import android.content.Context
@@ -14,7 +13,7 @@ class AccelerationSensorManager(context: Context) : SensorEventListener {
     fun startListening(callback: (Float, Float, Float) -> Unit) {
         onSensorChanged = callback
         val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME)
     }
 
     fun stopListening() {

@@ -10,7 +10,7 @@ import com.example.mycomposeapp.ui.fragments.Fragment2
 import com.example.mycomposeapp.ui.fragments.Fragment3
 
 @Composable
-fun MainScreen(acceleration: androidx.compose.runtime.State<Triple<Float, Float, Float>>) {
+fun MainScreen(acceleration: State<Triple<Float, Float, Float>>) {
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Scaffold(

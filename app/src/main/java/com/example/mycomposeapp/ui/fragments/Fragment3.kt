@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
-import java.nio.ByteBuffer
 import java.util.concurrent.Executors
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -145,10 +144,5 @@ class PixelAnalyzer(val onColorDetected: (Int) -> Unit) : ImageAnalysis.Analyzer
         image.close()
     }
 
-    private fun ByteBuffer.toByteArray(): ByteArray {
-        rewind()
-        val data = ByteArray(remaining())
-        get(data)
-        return data
-    }
+
 }

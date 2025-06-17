@@ -17,6 +17,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Fragment1.kt
+
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {

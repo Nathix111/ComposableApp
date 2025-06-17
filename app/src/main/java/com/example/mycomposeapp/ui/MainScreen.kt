@@ -19,17 +19,17 @@ fun MainScreen(acceleration: State<Triple<Float, Float, Float>>) {
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
-                    icon = { Text("Accelerometer") }
+                    icon = { Text("ForceG") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
-                    icon = { Text("Fragment 2") }
+                    icon = { Text("Sonomètre") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
-                    icon = { Text("Fragment 3") }
+                    icon = { Text("CamColor") }
                 )
             }
         }

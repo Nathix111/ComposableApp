@@ -119,7 +119,7 @@ private fun DrawScope.drawLineGraph(
 
         drawCircle(
             color = color,
-            radius = 3.dp.toPx(),
+            radius = 1.dp.toPx(),
             center = Offset(i * stepX, currentY)
         )
     }

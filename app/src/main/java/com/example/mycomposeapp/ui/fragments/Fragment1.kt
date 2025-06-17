@@ -24,7 +24,7 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
     val historyX = remember { mutableStateListOf<Float>() }
     val historyY = remember { mutableStateListOf<Float>() }
     val historyZ = remember { mutableStateListOf<Float>() }
-    val maxDataPoints = 50 // Increased buffer size for smoother animation
+    val maxDataPoints = 150 // Increased buffer size for smoother animation
     var showGraph by remember { mutableStateOf(true) }
 
     // Calculate total G once for both display modes

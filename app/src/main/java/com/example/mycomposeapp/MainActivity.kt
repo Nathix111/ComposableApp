@@ -19,9 +19,8 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var sensorManager: AccelerationSensorManager
     private val acceleration = mutableStateOf(Triple(0f, 0f, 0f))
-    private val CAMERA_PERMISSION = Manifest.permission.CAMERA
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,22 +31,28 @@ class MainActivity : ComponentActivity() {
         }
 
         requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val allGranted = permissions.all { it.value }
+            if (allGranted) {
                 launchApp()
             } else {
-                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Camera and microphone permissions are required", Toast.LENGTH_LONG).show()
                 finish()
             }
         }
 
-        if (ContextCompat.checkSelfPermission(this, CAMERA_PERMISSION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        val requiredPermissions = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
+
+        if (requiredPermissions.all { perm ->
+                ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED
+            }) {
             launchApp()
         } else {
-            requestPermissionLauncher.launch(CAMERA_PERMISSION)
+            requestPermissionLauncher.launch(requiredPermissions)
         }
     }
 

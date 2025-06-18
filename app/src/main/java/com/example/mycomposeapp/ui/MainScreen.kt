@@ -20,7 +20,7 @@ fun MainScreen(acceleration: State<Triple<Float, Float, Float>>, mainActivity: M
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
-                    icon = { Text("ForceG") }
+                    icon = { Text("Force G") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
@@ -30,7 +30,7 @@ fun MainScreen(acceleration: State<Triple<Float, Float, Float>>, mainActivity: M
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
-                    icon = { Text("CamColor") }
+                    icon = { Text("Pixel Cam") }
                 )
             }
         }

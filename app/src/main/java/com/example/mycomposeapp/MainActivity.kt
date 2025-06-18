@@ -145,34 +145,34 @@ fun PermissionRequestScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Permissions Required",
+            text = "Autorisations requises",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         if (shouldShowRationale) {
             Text(
-                text = "This app needs camera and microphone permissions to function properly. " +
-                        "Please grant these permissions in the next dialog.",
+                text = "Cette application a besoin des autorisations de l'appareil photo et du microphone pour fonctionner correctement." +
+                        "Veuillez accorder ces autorisations dans la boîte de dialogue suivante.",
                 modifier = Modifier.padding(bottom = 24.dp),
                 textAlign = TextAlign.Center
             )
         } else {
             Text(
-                text = "Please grant camera and microphone permissions in system dialog",
+                text = "Veuillez autoriser l'utilisation de la caméra et du microphone dans la boîte de dialogue du système.",
                 modifier = Modifier.padding(bottom = 24.dp),
                 textAlign = TextAlign.Center
             )
         }
 
         Button(onClick = onRequestPermission) {
-            Text("Grant Permissions")
+            Text("Accorder des autorisations")
         }
 
         if (!shouldShowRationale) {
             Spacer(modifier = Modifier.height(16.dp))
             TextButton(onClick = onOpenSettings) {
-                Text("Open App Settings")
+                Text("Ouvrir les paramètres de l'application")
             }
         }
     }

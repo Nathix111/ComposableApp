@@ -73,7 +73,7 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = if (showGraph) "Show Numerical Values" else "Show Graphs",
+                    text = if (showGraph) "Afficher les valeurs numériques" else "Afficher les graphiques",
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(
@@ -97,7 +97,7 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
                     .padding(8.dp)
             ) {
                 Text(
-                    text = "Acceleration Graph",
+                    text = "Graphique d'accélération",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -123,11 +123,11 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
                     modifier = Modifier.padding(top = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    LegendItem(color = Color.Red, text = "X Axis")
+                    LegendItem(color = Color.Red, text = "Axe X")
                     Spacer(modifier = Modifier.width(16.dp))
-                    LegendItem(color = Color.Green, text = "Y Axis")
+                    LegendItem(color = Color.Green, text = "Axe Y")
                     Spacer(modifier = Modifier.width(16.dp))
-                    LegendItem(color = Color.Blue, text = "Z Axis")
+                    LegendItem(color = Color.Blue, text = "Axe Z")
                 }
             }
         } else {
@@ -141,19 +141,19 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ValueDisplay(
-                    label = "X Axis",
+                    label = "Axe X",
                     value = acceleration.value.first / 9.81f,
                     color = Color.Red
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ValueDisplay(
-                    label = "Y Axis",
+                    label = "Axe Y",
                     value = acceleration.value.second / 9.81f,
                     color = Color.Green
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ValueDisplay(
-                    label = "Z Axis",
+                    label = "Axe Z",
                     value = acceleration.value.third / 9.81f,
                     color = Color.Blue
                 )

@@ -2,6 +2,7 @@
 package com.example.mycomposeapp.ui.fragments
 
 import android.graphics.Color
+import android.widget.Toast
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,7 +31,9 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
-
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 
 
 @Composable
@@ -90,17 +93,24 @@ fun Fragment3() {
         )
 
         // Color display at the bottom
+
+        val clipboardManager = LocalClipboardManager.current
+        val hex = String.format("#%06X", 0xFFFFFF and centerColor)
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
                 .align(Alignment.BottomCenter)
-                .background(androidx.compose.ui.graphics.Color(centerColor)),
+                .background(androidx.compose.ui.graphics.Color(centerColor))
+                .clickable {
+                    clipboardManager.setText(AnnotatedString(hex))
+                    Toast.makeText(context, "Couleur $hex copier au press papier", Toast.LENGTH_SHORT).show()
+                },
             contentAlignment = Alignment.Center
         ) {
-            val hex = String.format("#%06X", 0xFFFFFF and centerColor)
             Text(
-                text = "Color: $hex",
+                text = "Couleur: $hex",
                 style = MaterialTheme.typography.bodyLarge,
                 color = if (androidx.compose.ui.graphics.Color(centerColor).luminance() < 0.5f)
                     androidx.compose.ui.graphics.Color.White

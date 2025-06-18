@@ -85,7 +85,8 @@ fun Fragment2(activity: MainActivity) {
                             sum += buffer[i] * buffer[i]
                         }
                         val rms = sqrt(sum / bytesRead)
-                        val db = (20 * log10(rms)).toFloat()
+                        val reference = 0.1  // avoid log10(0) and scale range
+                        val db = (20 * log10(rms / reference)).toFloat().coerceAtLeast(0f)
 
                         withContext(Dispatchers.Main) {
                             currentDb = db
@@ -129,7 +130,7 @@ fun Fragment2(activity: MainActivity) {
         DecibelGraph(
             dbHistory = dbHistory,
             modifier = Modifier
-                .height(150.dp)
+                .height(300.dp)
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         )
@@ -143,7 +144,7 @@ fun Fragment2(activity: MainActivity) {
             Text("Max: %.1f dB".format(maxDb), fontSize = 20.sp)
             Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = { maxDb = 0f }) {
-                Text("Reset")
+                Text("Réinitialiser")
             }
         }
     }
@@ -152,73 +153,73 @@ fun Fragment2(activity: MainActivity) {
 @Composable
 fun DecibelGraph(dbHistory: List<Float>, modifier: Modifier = Modifier) {
     val graphColor = MaterialTheme.colorScheme.primary
-    val maxDbInHistory = dbHistory.maxOrNull() ?: 1f
-    val minDbInHistory = dbHistory.minOrNull() ?: 0f
-    val range = maxOf(1f, maxDbInHistory - minDbInHistory)
+    val minDbInHistory = 0f
+    val maxDbInHistory = 120f
+    val range = maxDbInHistory - minDbInHistory
+    val legendSteps = listOf(120f, 80f, 40f, 0f)
 
-    Canvas(modifier = modifier) {
-        val width = size.width
-        val height = size.height
-        val padding = 8.dp.toPx()
-
-        // Draw Y-axis labels
-        drawContext.canvas.nativeCanvas.apply {
-            drawText(
-                "%.0f".format(maxDbInHistory),
-                padding,
-                padding + 20,
-                android.graphics.Paint().apply {
-                    color = android.graphics.Color.BLACK
-                    textSize = 24f
-                }
-            )
-            drawText(
-                "%.0f".format(minDbInHistory),
-                padding,
-                height - padding,
-                android.graphics.Paint().apply {
-                    color = android.graphics.Color.BLACK
-                    textSize = 24f
-                }
-            )
+    Row(modifier = modifier) {
+        // Y-axis labels (legends)
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(end = 8.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            legendSteps.forEach { label ->
+                Text(
+                    text = "%.0f".format(label),
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
         }
 
-        // Draw grid lines
-        for (i in 0..3) {
-            val yPos = height - padding - (height - 2 * padding) * i / 3
-            drawLine(
-                color = Color.LightGray,
-                start = Offset(padding, yPos),
-                end = Offset(width - padding, yPos),
-                strokeWidth = 1.dp.toPx()
-            )
-        }
+        // Graph itself
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val width = size.width
+            val height = size.height
+            val padding = 8.dp.toPx()
 
-        if (dbHistory.size > 1) {
-            val path = Path()
-            val xStep = (width - 2 * padding) / (dbHistory.size - 1)
+            // Draw grid lines
+            legendSteps.forEach { label ->
+                val normalized = (label - minDbInHistory) / range
+                val yPos = height - padding - (height - 2 * padding) * normalized
 
-            dbHistory.forEachIndexed { index, db ->
-                val x = padding + index * xStep
-                // Normalize the dB value to fit within the graph height
-                val normalizedDb = (db - minDbInHistory) / range
-                val y = height - padding - (height - 2 * padding) * normalizedDb
-
-                if (index == 0) {
-                    path.moveTo(x, y)
-                } else {
-                    path.lineTo(x, y)
-                }
+                drawLine(
+                    color = Color.LightGray,
+                    start = Offset(0f, yPos),
+                    end = Offset(width, yPos),
+                    strokeWidth = 1.dp.toPx()
+                )
             }
 
-            drawPath(
-                path = path,
-                color = graphColor,
-                style = Stroke(
-                    width = 3.dp.toPx(),
-                    cap = StrokeCap.Round
+            // Draw the graph path
+            if (dbHistory.size > 1) {
+                val path = Path()
+                val xStep = width / (dbHistory.size - 1)
+
+                dbHistory.forEachIndexed { index, db ->
+                    val x = index * xStep
+                    val normalizedDb = (db - minDbInHistory) / range
+                    val y = height - padding - (height - 2 * padding) * normalizedDb
+
+                    if (index == 0) {
+                        path.moveTo(x, y)
+                    } else {
+                        path.lineTo(x, y)
+                    }
+                }
+
+                drawPath(
+                    path = path,
+                    color = graphColor,
+                    style = Stroke(
+                        width = 3.dp.toPx(),
+                        cap = StrokeCap.Round
+                    )
                 )
-            )
+            }
         }
     }
 }

@@ -5,12 +5,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.example.mycomposeapp.MainActivity
 import com.example.mycomposeapp.ui.fragments.Fragment1
 import com.example.mycomposeapp.ui.fragments.Fragment2
 import com.example.mycomposeapp.ui.fragments.Fragment3
 
 @Composable
-fun MainScreen(acceleration: State<Triple<Float, Float, Float>>) {
+fun MainScreen(acceleration: State<Triple<Float, Float, Float>>, mainActivity: MainActivity) {
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -37,7 +38,7 @@ fun MainScreen(acceleration: State<Triple<Float, Float, Float>>) {
         Box(modifier = Modifier.padding(paddingValues)) {
             when (selectedTab) {
                 0 -> Fragment1(acceleration)
-                1 -> Fragment2()
+                1 -> Fragment2(mainActivity)
                 2 -> Fragment3()
             }
         }

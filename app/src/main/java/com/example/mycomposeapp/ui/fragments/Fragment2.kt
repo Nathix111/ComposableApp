@@ -107,7 +107,7 @@ fun Fragment2(activity: MainActivity) {
                             }
                         }
                     }
-                    delay(100) // Update 10 times per second
+                    delay(150) // Update 10 times per second
                 } catch (e: Exception) {
                     e.printStackTrace()
                     withContext(Dispatchers.Main) {

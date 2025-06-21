@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.mycomposeapp.ui.components.CombinedGForceGraph
@@ -17,8 +18,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Fragment1.kt
+@SuppressLint("LocalContextConfigurationRead", "UnrememberedMutableState")
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
     val historyX = remember { mutableStateListOf<Float>() }
@@ -26,6 +27,8 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
     val historyZ = remember { mutableStateListOf<Float>() }
     val maxDataPoints = 150 // Increased buffer size for smoother animation
     var showGraph by remember { mutableStateOf(true) }
+
+    val isLandscape = LocalContext.current.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     // Calculate total G once for both display modes
     val totalG by derivedStateOf {
@@ -132,32 +135,62 @@ fun Fragment1(acceleration: State<Triple<Float, Float, Float>>) {
             }
         } else {
             // Numerical display
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ValueDisplay(
-                    label = "Axe X",
-                    value = acceleration.value.first / 9.81f,
-                    color = Color.Red
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ValueDisplay(
-                    label = "Axe Y",
-                    value = acceleration.value.second / 9.81f,
-                    color = Color.Green
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ValueDisplay(
-                    label = "Axe Z",
-                    value = acceleration.value.third / 9.81f,
-                    color = Color.Blue
-                )
+            if (isLandscape) {
+                // Landscape layout
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    ValueDisplay(
+                        label = "Axe X",
+                        value = acceleration.value.first / 9.81f,
+                        color = Color.Red
+                    )
+                    ValueDisplay(
+                        label = "Axe Y",
+                        value = acceleration.value.second / 9.81f,
+                        color = Color.Green
+                    )
+                    ValueDisplay(
+                        label = "Axe Z",
+                        value = acceleration.value.third / 9.81f,
+                        color = Color.Blue
+                    )
+                }
+            } else {
+                // Portrait layout
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ValueDisplay(
+                        label = "Axe X",
+                        value = acceleration.value.first / 9.81f,
+                        color = Color.Red
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ValueDisplay(
+                        label = "Axe Y",
+                        value = acceleration.value.second / 9.81f,
+                        color = Color.Green
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ValueDisplay(
+                        label = "Axe Z",
+                        value = acceleration.value.third / 9.81f,
+                        color = Color.Blue
+                    )
+                }
             }
+
         }
     }
 }

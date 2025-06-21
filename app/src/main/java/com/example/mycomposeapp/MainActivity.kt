@@ -149,21 +149,24 @@ fun PermissionRequestScreen(
         Text(
             text = "Autorisations requises",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         if (shouldShowRationale) {
             Text(
                 text = "Cette application a besoin des autorisations de l'appareil photo et du microphone pour fonctionner correctement." +
                         "Veuillez accorder ces autorisations dans la boîte de dialogue suivante.",
-                modifier = Modifier.padding(bottom = 24.dp),
-                textAlign = TextAlign.Center
+                modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
             Text(
                 text = "Veuillez autoriser l'utilisation de la caméra et du microphone dans la boîte de dialogue du système.",
                 modifier = Modifier.padding(bottom = 24.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 

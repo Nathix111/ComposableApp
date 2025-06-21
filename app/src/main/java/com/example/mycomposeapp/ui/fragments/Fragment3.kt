@@ -86,12 +86,23 @@ fun Fragment3() {
         // Root Box to allow overlaying the marker
         Box(modifier = Modifier.fillMaxSize()) {
             Row(modifier = Modifier.fillMaxSize()) {
-                AndroidView(
-                    factory = { previewView },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                )
+                Box(modifier = Modifier.weight(1f)) {
+                    AndroidView(
+                        factory = { previewView },
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    // Center marker overlay (for landscape)
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .align(Alignment.Center)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            )
+                    )
+                }
 
                 Box(
                     modifier = Modifier
@@ -114,17 +125,6 @@ fun Fragment3() {
                     )
                 }
             }
-
-            // Center marker overlay (for landscape)
-            Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .align(Alignment.Center)
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
-            )
         }
     } else {
         // Portrait layout

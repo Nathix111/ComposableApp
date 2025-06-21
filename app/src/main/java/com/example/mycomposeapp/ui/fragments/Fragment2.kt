@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,26 +79,35 @@ fun Fragment2(activity: MainActivity) {
                     val bytesRead = audioRecord.read(buffer, 0, bufferSize)
 
                     if (bytesRead > 0) {
+                        // Calculate RMS (Root Mean Square)
                         var sum = 0.0
                         for (i in 0 until bytesRead) {
-                            sum += buffer[i] * buffer[i]
+                            // Convert to double and normalize to -1.0 to 1.0 range
+                            val sample = buffer[i].toDouble() / Short.MAX_VALUE
+                            sum += sample * sample
                         }
                         val rms = sqrt(sum / bytesRead)
-                        val reference = 0.1  // avoid log10(0) and scale range
-                        val db = (20 * log10(rms / reference)).toFloat().coerceAtLeast(0f)
+
+                        // Calculate dB with proper reference
+                        // Using 20 µPa as reference (standard for SPL)
+                        // Also adding a small epsilon to avoid log(0)
+                        val db = (20 * log10(max(rms, 1e-16) / 0.00002)).toFloat()
+
+                        // Clamp to reasonable range (0-120 dB)
+                        val clampedDb = db.coerceIn(0f, 120f)
 
                         withContext(Dispatchers.Main) {
-                            currentDb = db
-                            if (db > maxDb) maxDb = db
+                            currentDb = clampedDb
+                            if (clampedDb > maxDb) maxDb = clampedDb
 
                             // Add to history
-                            dbHistory.add(db)
+                            dbHistory.add(clampedDb)
                             if (dbHistory.size > MAX_HISTORY) {
                                 dbHistory.removeAt(0)
                             }
                         }
                     }
-                    delay(100)
+                    delay(100) // Update 10 times per second
                 } catch (e: Exception) {
                     e.printStackTrace()
                     withContext(Dispatchers.Main) {

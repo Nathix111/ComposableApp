@@ -1,6 +1,7 @@
 // ui/fragments/Fragment3.kt
 package com.example.mycomposeapp.ui.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.widget.Toast
 import androidx.camera.view.PreviewView
@@ -32,10 +33,15 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun Fragment3() {
     val context = LocalContext.current
@@ -44,6 +50,11 @@ fun Fragment3() {
     val executor = remember { Executors.newSingleThreadExecutor() }
 
     var centerColor by remember { mutableStateOf(Color.BLACK) }
+
+    val clipboardManager = LocalClipboardManager.current
+    val hex = String.format("#%06X", 0xFFFFFF and centerColor)
+
+    val isLandscape = context.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
     LaunchedEffect(Unit) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -71,55 +82,94 @@ fun Fragment3() {
         )
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        // Camera preview view
-        AndroidView(
-            factory = { previewView },
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // Center point overlay
-        Box(
-            modifier = Modifier
-                .size(16.dp)
-                .align(Alignment.Center)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape
+    if (isLandscape) {
+        // Root Box to allow overlaying the marker
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                AndroidView(
+                    factory = { previewView },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
-        )
 
-        // Color display at the bottom
+                Box(
+                    modifier = Modifier
+                        .width(150.dp)
+                        .fillMaxHeight()
+                        .background(androidx.compose.ui.graphics.Color(centerColor))
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(hex))
+                            Toast.makeText(context, "Couleur $hex copiée au presse-papiers", Toast.LENGTH_SHORT).show()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Couleur: $hex",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (androidx.compose.ui.graphics.Color(centerColor).luminance() < 0.5f)
+                            androidx.compose.ui.graphics.Color.White
+                        else
+                            androidx.compose.ui.graphics.Color.Black
+                    )
+                }
+            }
 
-        val clipboardManager = LocalClipboardManager.current
-        val hex = String.format("#%06X", 0xFFFFFF and centerColor)
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .align(Alignment.BottomCenter)
-                .background(androidx.compose.ui.graphics.Color(centerColor))
-                .clickable {
-                    clipboardManager.setText(AnnotatedString(hex))
-                    Toast.makeText(context, "Couleur $hex copier au press papier", Toast.LENGTH_SHORT).show()
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Couleur: $hex",
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (androidx.compose.ui.graphics.Color(centerColor).luminance() < 0.5f)
-                    androidx.compose.ui.graphics.Color.White
-                else
-                    androidx.compose.ui.graphics.Color.Black
+            // Center marker overlay (for landscape)
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .align(Alignment.Center)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
             )
+        }
+    } else {
+        // Portrait layout
+        Box(modifier = Modifier.fillMaxSize()) {
+            AndroidView(
+                factory = { previewView },
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .align(Alignment.Center)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(androidx.compose.ui.graphics.Color(centerColor))
+                    .clickable {
+                        clipboardManager.setText(AnnotatedString(hex))
+                        Toast.makeText(context, "Couleur $hex copiée au presse-papiers", Toast.LENGTH_SHORT).show()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Couleur: $hex",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (androidx.compose.ui.graphics.Color(centerColor).luminance() < 0.5f)
+                        androidx.compose.ui.graphics.Color.White
+                    else
+                        androidx.compose.ui.graphics.Color.Black
+                )
+            }
         }
     }
 }
+
+
 
 class PixelAnalyzer(val onColorDetected: (Int) -> Unit) : ImageAnalysis.Analyzer {
     override fun analyze(image: ImageProxy) {

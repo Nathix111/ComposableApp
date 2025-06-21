@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -91,6 +92,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyComposeAppTheme {
                 PermissionRequestScreen(
+
                     shouldShowRationale = shouldShowPermissionRationale.value,
                     onRequestPermission = {
                         val requiredPermissions = arrayOf(
@@ -140,7 +142,7 @@ fun PermissionRequestScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -165,14 +167,16 @@ fun PermissionRequestScreen(
             )
         }
 
-        Button(onClick = onRequestPermission) {
-            Text("Accorder des autorisations")
-        }
+
 
         if (!shouldShowRationale) {
             Spacer(modifier = Modifier.height(16.dp))
             TextButton(onClick = onOpenSettings) {
                 Text("Ouvrir les paramètres de l'application")
+            }
+        }else{
+            Button(onClick = onRequestPermission) {
+                Text("Accorder des autorisations")
             }
         }
     }
